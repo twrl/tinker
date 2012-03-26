@@ -59,35 +59,35 @@ define(['underscore', 'jquery', 'jquery/twFile'], function (_, $) {
                         
         // And this transport is for mapping a POST to a Web Worker
         workTransport:  function (options, originalOptions, jqXHR) {
-                            if (this.isWorkerReq(options)) {
-                                var worker = this.getWorker(options.url);
+//                            if ($.localJax.isWorkerReq(options)) {
+                                var worker = $.localJax.getWorker(options.url);
                                 return {
                                     send:   function (headers, complete) {
                                                 worker.onmessage = function (e) {
-                                                    complete(200, 'OK', e.data);
+                                                    complete(200, 'OK', { text: e.data});
                                                     worker.onmessage = null;
                                                 };
                                                 worker.postMessage(options.data);
                                             },
                                     abort:  function () {}
                                 };
-                            }
+//                            }
                         },
                     
         getWorker:      function (script) {
-                            if (this.workers[script] === undefined) { 
+                            if ($.localJax.workers[script] === undefined) { 
                         
-                                this.workers[script] = new Worker(script);
+                                $.localJax.workers[script] = new Worker(script);
                                 
                             }
-                            return this.workers[script];
+                            return $.localJax.workers[script];
                         }
                     
         
                     
     };
     
-    $.ajaxTransport($.localJax.fileTransport);
-    $.ajaxTransport($.localJax.workTransport);
+//    $.ajaxTransport('worker', $.localJax.fileTransport);
+    $.ajaxTransport('text', $.localJax.workTransport);
     
 });

@@ -1,0 +1,22 @@
+<html>
+<head>
+	<script src="js/require.js"></script>
+	<script>
+	require.config({ baseUrl: "js/" });
+	require(['jquery', 'jquery/localJax'], function ($) {
+		$(function () {
+			$('#in').change(function () {
+				$.post('./js/testWorker.js', $(this).val(), function (data) {
+					$('#out').text(data);
+				}, 'text');
+			});
+		});
+	});
+	</script>
+</head>
+<body>
+<h3>Try This</h3>
+<p>This text here <input type="text" id="in"/></p>
+<p>should get reflected in <span style="color: red" id="out">here</span></p>
+</body>
+</html>
