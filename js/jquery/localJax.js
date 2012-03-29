@@ -37,7 +37,7 @@ var mod = function (_, $) {
                     
     };
     
-    $.ajaxTransport('*', $.localJax.fileTransport);
+    $.ajaxTransport('text json xml', $.localJax.fileTransport);
     
 };
 
