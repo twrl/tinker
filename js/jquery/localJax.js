@@ -1,34 +1,22 @@
 /*
     
-    localJax - Advanced AJAX emulation on the local filesystem
+    localJax - AJAX emulation on the local filesystem
     
     Copyright © Tom Robbins 2012
     Licensed under the EUPL, version 1.1 only
+    See http://joinup.ec.europa.eu/software/page/eupl
     
 */
 
-define(['underscore', 'jquery', 'jquery/twFile'], function (_, $) {
+// Dependencies: underscore.js, jQuery, jQuery.twFile (http://jquery.tiddlywiki.org/twFile.html)
+
+var mod = function (_, $) {
     
     $.localJax = {
-        
-        // These are some useful functions for identifying the type of query
-        isLocal:        function (options) {
-                            return (options.url.lastIndexOf('file:', 0) === 0);
-                        },
-                    
-    /*    isFileReq:      function (options) {
-                            return  this.isLocal(options) && 
-                                ((options.type === 'PUT') || ((options.type === 'GET') && this.isTrivialQuery(options)));
-                        }, */
-                    
-        isTrivialQuery: function (options) {
-                            return  (_.isString(options.data) && options.data === '') ||
-                                _.isEmptyObject(options.data);
-                        },
                     
         // This is the custom transport for doing PUT and GET against a local file
         fileTransport:  function (options, originalOptions, jqXHR) {
-                            if (this.isLocal(options)) {
+                            if (options.isLocal) {
                                 return {
                                     send:   function (headers, complete) {
                                                 var path = $.twFile.convertUriToLocalPath(options.url),
@@ -51,4 +39,10 @@ define(['underscore', 'jquery', 'jquery/twFile'], function (_, $) {
     
     $.ajaxTransport('*', $.localJax.fileTransport);
     
-});
+};
+
+// Use AMD if available, otherwise invoke _ and jQuery directly
+if (define && define.amd) define(['undercore', 'jquery', 'jquery/twFile'], mod)
+else mod(_, jQuery);
+
+delete mod;
